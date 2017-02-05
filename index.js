@@ -1,3 +1,4 @@
+
 (function(w, $) {
     function GitHubUser(user) {
         this.user = user
