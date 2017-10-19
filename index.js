@@ -7,7 +7,7 @@ function httpGetAsync(theUrl, callback1, callback2) {
           if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
                callback1(JSON.parse(xmlHttp.responseText));
           else if (xmlHttp.readyState == 4 && xmlHttp.status == 404)
-               callback2();
+               callback2(xmlHttp.status);
      }
      xmlHttp.open("GET", theUrl, true);
      xmlHttp.send(null);
@@ -16,18 +16,20 @@ function httpGetAsync(theUrl, callback1, callback2) {
 
 class GitHubUser {
      constructor(username) {
-          let theUrl = 'https://api.github.com/users/' + username;
+          this.username = username;
+
+     }
+     getUserInformation() {
+          let theUrl = 'https://api.github.com/users/' + this.username;
           return new Promise(function (resolve, reject) {
                httpGetAsync(theUrl, resolve, reject);
           });
      }
-     getUserInformation() {
-          return this.then(function(obj){
-               return obj;
-          });
-
-     }
      getRepos() {
+          let theUrl = 'https://api.github.com/users/' + this.username + '/repos';
+          return new Promise(function (resolve, reject) {
+               httpGetAsync(theUrl, resolve, reject);
+          });
 
      }
      render() {
@@ -36,12 +38,8 @@ class GitHubUser {
 }
 
 let me = new GitHubUser('itemah26');
-console.log(me);
-me.then(function (obj) {
-     console.log(obj);
-});
-console.log(me.getUserInformation);
-
+console.log(me.getUserInformation());
+console.log(me.getRepos());
 
 function Render($element, html) {
      // Fill this
