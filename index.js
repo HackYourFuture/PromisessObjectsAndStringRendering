@@ -7,7 +7,7 @@ function httpGetAsync(theUrl, callback1, callback2) {
           if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
                callback1(JSON.parse(xmlHttp.responseText));
           else if (xmlHttp.readyState == 4 && xmlHttp.status == 404)
-               callback2(xmlHttp.status);
+               callback2(xmlHttp.statusText);
      }
      xmlHttp.open("GET", theUrl, true);
      xmlHttp.send(null);
