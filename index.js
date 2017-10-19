@@ -33,29 +33,27 @@ class GitHubUser {
 
      }
      render() {
-          // Here return a string, be fancy and use map && reduce
+          let list = "<h1>User informations</h1>";
+          console.log(this.user);
+          list += '<h3>' + 'Id: ' + this.user.login + '<br>' + 'Name: ' + this.user.name + '</h3>' + '<img width=250px height=250px src="' + this.user.avatar_url + '">';
+          list += '<h2>Repository informations</h2>' + `<ul>
+	     ${this.repos.reduce((p, i) => p + `<li><a target="_blank" href="${i.html_url}">${i.name}</a></li>`, '')}
+	     </ul>`;
+          return list;
      }
 }
 
-let me = new GitHubUser('itemah26');
-console.log(me.getUserInformation());
-console.log(me.getRepos());
-
-function Render($element, html) {
-     // Fill this
+function Render(element, html) {
+     document.getElementById(element).innerHTML = html;
 }
 
 
-//// Expecting
-//let gitUser = new GitHubUser('ideabile');
-//
-//gitUser
-//     .getUserInformations()
-//     .then(function (informations) {
-//          this.user = informations;
-//          return this.getRepos();
-//     })
-//     .then(function (repos) {
-//          this.repos = repos;
-//          Render('.githubView', this.render());
-//     });
+let gitUser = new GitHubUser('itemah26');
+
+gitUser.getUserInformation().then(function (informations) {
+     gitUser.user = informations;
+     return gitUser.getRepos();
+}).then(function (repos) {
+     gitUser.repos = repos;
+     Render('githubView', gitUser.render());
+});
