@@ -2,7 +2,6 @@
 class GitHubUser {
     constructor(name) {
         this.name = name;
-        this.userReposUrl = "https://api.github.com/users/" + name + "/repos";
     }
 
     //method that gets the 
@@ -14,11 +13,12 @@ class GitHubUser {
                 if (request.readyState === 4 && request.status === 200) {
                     resolve(JSON.parse(request.responseText));
                 } else {
-                    reject(request.stausText);
+                    console.log("I'm here", request);
+                    reject(request.status + " " + request.statusText);
                 }
             }
             request.onerror = () => {
-                reject(request.stausText);
+                reject(request.status + " " + request.statusText);
             }
             request.send();
         })
@@ -32,21 +32,25 @@ class GitHubUser {
                 if (request.readyState === 4 && request.status === 200) {
                     resolve(JSON.parse(request.responseText));
                 } else {
-                    reject(request.stausText);
+                    reject(request.status + " " + request.statusText);
                 }
             }
+            console.log(request);
             request.onerror = () => {
-                reject(request.stausText);
+                reject(request.status + " " + request.statusText);
             }
             request.send();
         })
     }
 
-    //Methode that adds
+    //Methode that adds all the content to the existing Div
     render() {
-        console.log(repos);
-
-        return `<ul> ${repos.reduce(((prev, next) => prev + `<li>
+        return `<div id="userInfo">
+            <img src="${user.avatar_url}" alt="User icon">
+            <h1>${user.login}</h1>
+            <p>A link to the <a href="${user.html_url}">GitHubPage</a></p>
+            <div id="repos">
+            <ul> ${repos.reduce(((prev, next) => prev + `<li>
             Name: ${next.name} <br />
             <p>Language: ${next.language}<br />
             forks: ${next.forks}<br /> 
@@ -54,22 +58,46 @@ class GitHubUser {
             Watchers: ${next.watchers}
             </p> 
             </li>
-            `), ``)}</ul>`;
+            `), ``)}</ul></div>`;
     }
 
 
 
+}
+//end of class back to global
+
+
+//fired up once button clicked
+function clicked(){
+    let div = document.getElementById("githubView");
+    div.innerHTML = "";
+    let userName = document.getElementById("userText").value;
+    go(userName);
 
 }
+
 //Global func gets result of promise if it's good and appends html
 function Render(html){
     let theDiv = document.getElementById("githubView");
+    if (theDiv.innerHTML != ""){
+        theDiv.innerHTML = "";
+    }
     theDiv.innerHTML = html;
 }
 
+//Error handler function
+function errorRender(error){
+    let theDiv = document.getElementById("githubView");
+    theDiv.innerHTML = `<h1>Error!!!!</h1>
+                        <h3>${error}</h3>`;
+}
+
+
+//fired after the 
+function go(name){
 // New user whose info we will get
-let gitUser = new GitHubUser('ideabile');
-gitUser.getRepos().then(function (info) {
+let gitUser = new GitHubUser(name);
+gitUser.getUserInformation().then(function (info) {
     this.user = info
     return gitUser.getRepos();
 }).then(function (info) {
@@ -78,6 +106,7 @@ gitUser.getRepos().then(function (info) {
 }).then(function(info){
     Render(info);
 }).catch((err) => {
-    console.log(err);
+    console.log("Ik ben er!!", err);
+    errorRender(err);
 })
-
+}
