@@ -49,9 +49,10 @@ class GitHubUser {
             <img src="${user.avatar_url}" alt="User icon">
             <h1>${user.login}</h1>
             <p>A link to the <a href="${user.html_url}">GitHubPage</a></p>
-            <div id="repos">
-            <ul> ${repos.reduce(((prev, next) => prev + `<li>
-            Name: ${next.name} <br />
+            </div>
+            <div id="reposWrapper">
+            <ul> ${repos.reduce(((prev, next) => prev + `<li class="item">
+            <h4>${next.name}</h4> <br />
             <p>Language: ${next.language}<br />
             forks: ${next.forks}<br /> 
             Size: ${next.size}<br />
@@ -68,7 +69,7 @@ class GitHubUser {
 
 
 //fired up once button clicked
-function clicked(){
+function clicked() {
     let div = document.getElementById("githubView");
     div.innerHTML = "";
     let userName = document.getElementById("userText").value;
@@ -77,16 +78,16 @@ function clicked(){
 }
 
 //Global func gets result of promise if it's good and appends html
-function Render(html){
+function Render(html) {
     let theDiv = document.getElementById("githubView");
-    if (theDiv.innerHTML != ""){
+    if (theDiv.innerHTML != "") {
         theDiv.innerHTML = "";
     }
     theDiv.innerHTML = html;
 }
 
 //Error handler function
-function errorRender(error){
+function errorRender(error) {
     let theDiv = document.getElementById("githubView");
     theDiv.innerHTML = `<h1>Error!!!!</h1>
                         <h3>${error}</h3>`;
@@ -94,19 +95,19 @@ function errorRender(error){
 
 
 //fired after the 
-function go(name){
-// New user whose info we will get
-let gitUser = new GitHubUser(name);
-gitUser.getUserInformation().then(function (info) {
-    this.user = info
-    return gitUser.getRepos();
-}).then(function (info) {
-    this.repos = info;
-    return gitUser.render();
-}).then(function(info){
-    Render(info);
-}).catch((err) => {
-    console.log("Ik ben er!!", err);
-    errorRender(err);
-})
+function go(name) {
+    // New user whose info we will get
+    let gitUser = new GitHubUser(name);
+    gitUser.getUserInformation().then(function (info) {
+        this.user = info
+        return gitUser.getRepos();
+    }).then(function (info) {
+        this.repos = info;
+        return gitUser.render();
+    }).then(function (info) {
+        Render(info);
+    }).catch((err) => {
+        console.log("Ik ben er!!", err);
+        errorRender(err);
+    })
 }
