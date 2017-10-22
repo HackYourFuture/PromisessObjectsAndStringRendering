@@ -8,6 +8,16 @@ body {
     font-family: cursive;
 }
 
+div>h1, div>h3 {
+    width: 50%;
+    margin: 0 auto;
+    background-color: aliceblue;
+    border: ridge black 1px;
+    animation: awesomeAppear 2s;
+    position: relative;
+    padding: 1rem;   
+}
+
 #userName {
     background-color: aliceblue;
     width: 65%;
@@ -19,6 +29,8 @@ body {
 
 #userName h1 {
     margin-bottom: 1rem;
+    border: none;
+    width: 100%;
 }
 
 #userName form>* {
